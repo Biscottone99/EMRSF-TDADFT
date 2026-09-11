@@ -1,0 +1,6 @@
+molecule,target_state,log_target_state,emrsf_ev,tbe_ev,gamma_cv,requires_locked_reference
+azulene,2 B2,2 B2,4.91,4.49,0.86,false
+n_phenylpyrrole,3 A1,3 A1,6.51,5.86,0.98,true
+phthalazine,1 B1,1 B1,4.83,4.31,0.97,false
+twisted_dmabn,1 B1,1 B1,5.83,4.74,1.00,true
+quinoxaline,2 B1,2 B2,6.63,6.22,0.88,false

@@ -1,0 +1,10 @@
+molecule,state_label,program_term,cc3_tzvp_ev,source_table,geometry_level,reference_scope
+ethene,1 3B1u,1 B1u,4.48,VIII,MP2/6-31G*,vertical S0->Tn
+butadiene,1 3Bu,1 Bu,3.32,X,MP2/6-31G*,vertical S0->Tn
+butadiene,1 3Ag,1 Ag,5.17,X,MP2/6-31G*,vertical S0->Tn
+hexatriene,1 3Bu,1 Bu,2.69,XI,MP2/6-31G*,vertical S0->Tn
+hexatriene,1 3Ag,1 Ag,4.32,XI,MP2/6-31G*,vertical S0->Tn
+cyclopropene,1 3B2,1 B2,4.34,XIII,MP2/6-31G*,vertical S0->Tn
+cyclopropene,1 3B1,1 B1,6.62,XIII,MP2/6-31G*,vertical S0->Tn
+cyclopentadiene,1 3B2,1 B2,3.25,XIV,MP2/6-31G*,vertical S0->Tn
+cyclopentadiene,1 3A1,1 A1,5.09,XIV,MP2/6-31G*,vertical S0->Tn
