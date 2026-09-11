@@ -1,0 +1,39 @@
+include README.md
+include REFERENCES.md
+include VALIDATION.md
+include PERFORMANCE.md
+include CHANGES_v0.3.2.md
+include CHANGES_v0.3.3.md
+include CHANGES_v0.3.4.md
+include CHANGES_v0.3.5.md
+include CHANGES_v0.3.6.md
+include CHANGES_v0.4.0.md
+include CHANGES_v0.4.1.md
+include CHANGES_v0.5.0.md
+include CHANGES_v0.5.1.md
+include CHANGES_v0.5.2.md
+include CHANGES_v0.6.0.md
+include CHANGES_v0.7.0.md
+include CHANGES_v0.8.0.md
+include HIGH_ACCURACY_PROTOCOL_v0.5.0.md
+include RELEASE_VALIDATION_v0.5.0.md
+include ROBUST_SCF_PROTOCOL_v0.5.1.md
+include RELEASE_VALIDATION_v0.5.1.md
+include RELEASE_VALIDATION_v0.5.2.md
+include RELEASE_VALIDATION_v0.6.0.md
+include RELEASE_VALIDATION_v0.7.0.md
+include RELEASE_VALIDATION_v0.8.0.md
+include INSTALL_AND_RUN_v0.5.1.md
+include INSTALL_AND_RUN_v0.6.0.md
+include INSTALL_AND_RUN_v0.7.0.md
+include INSTALL_AND_RUN_v0.8.0.md
+include TRIPLET_EMRSF_EQUATIONS_v0.7.0.md
+include MRSF_CORE_SHA256_v0.7.0.txt
+include MRSF_CORE_SHA256_v0.8.0.txt
+include SOC_EMRSF_IMPLEMENTATION_v0.8.0.md
+include EQUATION_AUDIT_v0.4.1.md
+include LOG_AUDIT_v0.3.6.md
+include MIGRATION_v0.2.1_to_v0.3.1.md
+recursive-include benchmarks *.py
+recursive-include examples *.py *.slurm *.sh *.md *.csv *.xyz *.molden
+recursive-include tests *.py

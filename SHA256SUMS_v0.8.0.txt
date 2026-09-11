@@ -1,0 +1,7 @@
+ad46a4f1bf5d0edcc52f5a5efd1b11c32d943ca6f8f91718e68f59020bee2c4c  dist/pyscf_emrsf-0.8.0-py3-none-any.whl
+ce331e0cf6324f511b42ebda7beb39c67606a7bf4acb05745e2a57ba470188d6  dist/pyscf_emrsf-0.8.0.tar.gz
+
+# MRSF core, unchanged from v0.6.0:
+990244f1a1e729440f5e5c985beb07a5a63ff255a1b107fd70d65c81d21371eb  src/pyscf_emrsf/mrsf.py
+157144edd9e5943903cf2e7cf13720c76896aa99eecfdd19b2c381026e17761b  src/pyscf_emrsf/space.py
+826943a1519fbcfb89aeb6591764f1f859705baf0ef5e02c6364ceacc36abf63  src/pyscf_emrsf/kernels.py

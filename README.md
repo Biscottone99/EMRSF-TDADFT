@@ -1,0 +1,244 @@
+# PySCF-EMRSF 0.8.0
+
+Version 0.8.0 adds projected EMRSF-TDA singlet-triplet spin-orbit state
+interaction:
+
+- `--method emrsf --states both --soc` now uses the EMRSF singlet and triplet
+  eigenvectors, rather than their MRSF companion roots;
+- the one-electron Breit-Pauli and mean-field two-electron contributions are
+  retained separately (`none`, `amfi`, or `full` SOMF);
+- the added closed-shell LR-CV sector is included explicitly in the SOC
+  auxiliary wavefunctions;
+- the four-open MRSF C->V sector remains projected because its spin-completed
+  auxiliary wavefunction is not defined by the published equations; its
+  state-by-state excluded weight is printed and archived;
+- `--write-eigenvectors` writes a complete lossless NPZ plus a
+  configuration-labelled CSV for every requested manifold;
+- `--soc-external-module module.py` loads a user module defining
+  `compute_soc(context)` after the spin-free calculation;
+- every SOC NPZ is an external-ready archive containing raw response
+  eigenvectors, basis maps, determinant coefficients, orbitals, geometry,
+  one-electron SOC integrals, and SOMF two-electron integrals.
+
+See `SOC_EMRSF_IMPLEMENTATION_v0.8.0.md` and `CHANGES_v0.8.0.md`.
+
+Version 0.7.0 adds an explicitly derived triplet enlarged-space EMRSF-TDA
+operator while keeping the v0.6.0 MRSF core byte-identical:
+
+- `--method mrsf|emrsf` selects the spin-free response model;
+- `--states singlets|triplets|both` selects the roots to calculate;
+- singlet EMRSF is the published Oh *et al.* construction;
+- triplet EMRSF uses the spin-adapted triplet LR kernel, `(L+R)/sqrt(2)` OOS
+  row and `S1+S2` MRSF--CV coupling derived from the same determinant tables;
+- triplet CSVs distinguish `Tn-T0` from the vertical `Tn-S0` quantity. The
+  latter is `common_s0_excitation_ev` and is the benchmark comparison column;
+- optional self-consistent PySCF PCM solvates the high-spin reference and its
+  converged reaction field is frozen in the MRSF/EMRSF response;
+- `--soc` performs perturbative MRSF or EMRSF state interaction using
+  one-electron Breit-Pauli integrals and an optional AMFI or full SOMF
+  two-electron screening term;
+- length-gauge oscillator strengths are evaluated and printed by default for
+  every `S0 -> Sn` or `T0 -> Tn` transition.
+
+The published EMRSF article presents the singlet method; the triplet branch in
+this release is a theory extension, not a claim that triplet equations were
+printed in that article. Version 0.8.0 defines an explicitly labelled
+auxiliary-wavefunction state-interaction protocol for SOC. It includes the
+added LR-CV configurations but does not claim an analytic EMRSF
+quadratic-response property. See `CHANGES_v0.7.0.md`,
+`TRIPLET_EMRSF_EQUATIONS_v0.7.0.md` and
+`examples/xyz_job/README.md`.
+
+Version 0.5.2 added complete, pickle-free post-processing archives, S42--S47
+charge-transfer analysis, NTO export and MRSF length-gauge optical properties.
+
+Version 0.5.1 adds a robust, auditable convergence manager for the high-spin
+triplet ROHF/ROKS reference. The response operators and the MRSF/EMRSF
+Davidson solvers are unchanged from 0.5.0. A failed standard SCF is retried
+through ADIIS, damping, level shifting, coarse-grid preconvergence, MOM-locked
+final-grid refinement, and a final Newton/CIAH fallback. Stabilising terms are
+absent from every accepted final Hamiltonian.
+
+Period-two density oscillations are detected explicitly. Their averaged
+density may seed a retry, but is never accepted as the final reference because
+MRSF requires an idempotent two-open-shell determinant. See
+[`ROBUST_SCF_PROTOCOL_v0.5.1.md`](ROBUST_SCF_PROTOCOL_v0.5.1.md).
+
+Version 0.5.0 adds a unified `--method mrsf|emrsf` production driver. At the
+default `exact-dz` profile, both branches use the same BH&HLYP/cc-pVDZ
+state-locked reference, unpruned level-6 grid, direct integrals and tight
+solver thresholds; only the response space changes. It also adds exact
+four-centre EMRSF coupling, basis-convergence profiles and state-by-state
+Hamiltonian closure diagnostics. It never fits to published EMRSF energies or
+TBEs.
+
+See [`HIGH_ACCURACY_PROTOCOL_v0.5.0.md`](HIGH_ACCURACY_PROTOCOL_v0.5.0.md) for
+the new production workflow.
+
+Equation-level MRSF/EMRSF-TDDFT/TDA implementation using PySCF for AO
+integrals, DFT quadrature, J/K, density fitting, and iterative diagonalisation.
+OpenQP is used only as an independent numerical oracle; it is not called by
+the library at runtime.
+
+## What 0.4.1 fixes
+
+The response equations in 0.4.0 passed fixed-orbital OpenQP checks, but an
+ordinary PySCF Aufbau triplet converged to a different determinant for
+N-phenylpyrrole and twisted DMABN. Version 0.4.1 therefore treats the triplet
+reference as part of the method specification:
+
+- `auto`: ordinary Aufbau ROHF/ROKS, explicitly marked as not state locked;
+- `mom`: Molden-seeded maximum-overlap ROHF/ROKS with occupied- and SOMO-
+  subspace checks;
+- `external`: fixed restricted OpenQP Molden orbitals for operator-only tests.
+
+The importer validates alpha/beta common orbitals, spin occupations, electron
+count, AO basis and geometry, projects grouped Molden contractions through the
+AO cross overlap, removes decimal-truncation error, and reports density,
+gradient, overlap, energy-gap, and symmetry diagnostics.
+
+Other corrections are:
+
+- independent `--scf-grid-level` and `--observable-grid-level` options;
+- automatic point-group detection instead of forcing an assumed group;
+- geometry-specific paper/PySCF B1/B2 mappings in the benchmark extractor;
+- symmetry-complete Davidson seeds and explicit state-purity checks;
+- equation-level log checks for SI eq. S23, S30, S39, Tables S1--S3, and
+  observables S42--S47.
+
+See `EQUATION_AUDIT_v0.4.1.md` for the literature and source-code audit.
+
+## Installation and tests
+
+```bash
+python -m pip install -e '.[test]'
+pytest -q
+```
+
+The release criterion is the complete passing test suite. The suite compares dense and
+matrix-free roots, direct and RI coupling actions and adjoints, every branch
+of SI Tables S1--S3 against explicit four-index integrals, the S23 and S30
+constructions, symmetry-complete root discovery, the OpenQP public water
+example, the Molden/MOM reference controls, and S42--S47 densities.
+
+## Minimal use
+
+```python
+from pyscf import gto
+from pyscf_emrsf import EMRSFTDA
+from pyscf_emrsf.reference import build_reference
+
+mol = gto.M(
+    atom="O 0 0 0; H 0 -0.757 0.587; H 0 0.757 0.587",
+    basis="6-31g*",
+    spin=2,
+    symmetry=True,
+)
+mf = build_reference(
+    mol,
+    xc="bhandhlyp",
+    density_fit=True,
+    grid_level=3,
+    scf_strategy="robust",
+)
+method = EMRSFTDA(mf, nstates=8, solver="davidson", conv_tol=1e-9)
+result = method.kernel()
+descriptors = result.charge_transfer_descriptors(grid_level=5)
+result.write_log("h2o_v0.8.0.log", descriptors=descriptors)
+```
+
+For a state-locked calculation, pass `molden_seed=...` to `build_reference`.
+Use `build_reference_from_molden` only for a fixed-orbital cross-program test;
+it intentionally does not run a local SCF.
+
+Molden and NTO exports remain opt-in at the Python API level and automatic in
+the XYZ production driver:
+
+```python
+result.write_reference_molden("h2o_orbitals.molden")
+result.write_mrsf_nto_molden("h2o_nto", weight_threshold=1e-4)
+```
+
+The NTOs are explicitly the underlying MRSF state-to-state NTOs. The
+published S42--S47 construction does not define the LR-LR and cross-sector
+transition-density blocks required for full EMRSF NTOs, so this release does
+not invent them.
+
+## EMRSF SOC and eigenvector export
+
+```bash
+python examples/xyz_job/run_xyz_emrsf.py molecule.xyz \
+  --method emrsf \
+  --states both \
+  --nstates 5 \
+  --soc \
+  --soc-two-electron amfi \
+  --write-eigenvectors \
+  --output-dir results
+```
+
+Use `--soc-two-electron full` for the full molecular SOMF contraction or
+`none` for the one-electron Breit-Pauli operator alone. The readable vector
+CSV is complete by default; `--eigenvector-threshold 1e-6` may reduce only the
+CSV size while the NPZ remains lossless.
+
+An external module can be run immediately after the spin-free calculation:
+
+```bash
+python examples/xyz_job/run_xyz_emrsf.py molecule.xyz \
+  --method emrsf --states both --nstates 5 \
+  --soc-external-module examples/xyz_job/external_soc_module_example.py \
+  --soc-two-electron amfi --write-eigenvectors
+```
+
+The module must define `compute_soc(context)`. It can use
+`context.contract_one_body(...)`, the raw EMRSF eigenvectors, explicit basis
+maps, determinant coefficients, and the precomputed 1e/SOMF integrals.
+
+For the enlarged triplet space, select the multiplicity explicitly:
+
+```python
+triplets = EMRSFTDA(
+    mf, target_multiplicity=3, nstates=8, solver="davidson"
+).kernel()
+```
+
+`triplets.excitation_energies_ev` is relative to its own lowest triplet root.
+For a vertical `S0 -> Tn` energy, separately compute the singlet EMRSF S0 and
+use `triplets.energies_from_origin_ev(singlets.eigenvalues[0])`. The XYZ driver
+does this automatically.
+
+## Triplet benchmark set
+
+`examples/triplet_benchmark_schreiber2008` contains five external MP2/6-31G*
+XYZ geometries and nine CC3/TZVP vertical triplet targets from Schreiber
+*et al.* These data are validation references and are never used as fitting
+parameters. See that directory's README for the run and comparison commands.
+
+## Five-molecule benchmark
+
+The geometries in `examples/paper_ct_benchmark/geometries` are the bohr
+coordinates from `SI_loos.pdf`. After installation:
+
+```bash
+cd examples/paper_ct_benchmark
+bash run_validation_local.sh quick
+sbatch run_openqp_mrsf_checks.slurm
+sbatch run_emrsf_benchmark_v041.slurm
+```
+
+The first Slurm job validates conventional MRSF at fixed OpenQP orbitals for
+the two references that were previously wrong. The second runs the five
+state-locked EMRSF benchmarks. `openqp_mrsf/` additionally generates and runs
+independent OpenQP MRSF inputs for all five molecules.
+
+Results must be accepted by reference provenance, term, state character,
+`gamma_CV`, symmetry purity, residual, and equation audits—not by proximity of
+one energy alone. Full instructions and target mappings are in the example
+README and `VALIDATION.md`.
+
+## License
+
+GPL-3.0-or-later. The algebra was reconstructed from the cited publications
+and compared with the public OpenQP 1.2.1 source. No OpenQP executable or
+Fortran source is distributed in this package.
